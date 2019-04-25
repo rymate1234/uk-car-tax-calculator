@@ -10,6 +10,7 @@
   "author": "rymate1234",
   "license": "MIT",
   "private": false,
+  "homepage": "https://github.com/rymate1234/uk-car-tax-calculator/",
   "scripts": {
     "build:node": "microbundle --target node -f cjs",
     "build:web": "microbundle --target web -f es,umd",
