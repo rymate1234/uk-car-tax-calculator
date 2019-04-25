@@ -5,3 +5,4 @@ coverage
 .rts2*/
 .eslintcache
 yarn-error.log
+junit.xml
