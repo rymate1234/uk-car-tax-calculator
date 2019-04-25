@@ -8,6 +8,20 @@ describe('Historic Vehicles', () => {
   })
 })
 
+describe('Electric Vehicles', () => {
+  const registrationDate = new Date(2018, 3, 1)
+
+  test('returns 0 when an electric car', () => {
+    expect(calc({ registrationDate, co2: 123, fuel: 'Electric' })).toBe(0)
+  })
+
+  test('returns 320 when an electric car with a value more than £40000', () => {
+    expect(
+      calc({ registrationDate, co2: 123, fuel: 'Electric', value: 45000 })
+    ).toBe(320)
+  })
+})
+
 describe('Registered before 1 March 2001', () => {
   const registrationDate = new Date(1979, 1, 1)
 

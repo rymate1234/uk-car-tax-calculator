@@ -28,4 +28,4 @@ For a more comprehensive uide to usage check `test/index.test.js`
 
 PRs accepted, especially those concering updates to UK law.
 
-This project is linted with `eslint` using prettier, and runs tests with `jest`
+This project is linted with `eslint` using prettier, and runs tests with `jest` - these will need to pass before any PR is accepted.
