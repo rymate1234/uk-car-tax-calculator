@@ -1,6 +1,6 @@
 {
   "name": "uk-car-tax-calculator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A calculator to estimate the initial car tax for a vehicle in the UK",
   "source": "src/index.js",
   "module": "src/index.js",
