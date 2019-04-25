@@ -24,7 +24,7 @@ const tax = calculateTax({
 console.log(tax) // prints 315
 ```
 
-For a more comprehensive uide to usage check `test/index.test.js`
+For a more comprehensive guide to usage check `test/index.test.js`
 
 ## Contributing
 
