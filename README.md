@@ -1,6 +1,6 @@
 # UK Car Tax calculator
 
-A node module to calculate car tax rates in the UK based on the fuel type, engine size and when the vehicle was registered.
+A node module to calculate vehicle tax rates for cars and vans in the UK based on the fuel type, engine size and when the vehicle was registered.
 
 [![Build Status](https://dev.azure.com/supermarioryan0324/uk-car-tax-calculator/_apis/build/status/rymate1234.uk-car-tax-calculator?branchName=master)](https://dev.azure.com/supermarioryan0324/uk-car-tax-calculator/_build/latest?definitionId=1&branchName=master)
 

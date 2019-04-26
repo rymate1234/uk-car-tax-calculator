@@ -1,3 +1,7 @@
+# 1.1.0
+
+This version adds support for calculating the tax rate of vans / light goods vehicles
+
 # 1.0.1
 
 More sensible build defaults for use in environments where transpiling takes place:
