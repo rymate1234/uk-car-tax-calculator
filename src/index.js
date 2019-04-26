@@ -4,6 +4,12 @@ const HistoricVehicle = new Date(1979, 0, 1)
 const PreCO2 = new Date(2001, 2, 1)
 const April2017 = new Date(2017, 3, 1)
 
+const Euro4Start = new Date(2003, 2, 1)
+const Euro4End = new Date(2006, 11, 31)
+
+const Euro5Start = new Date(2009, 0, 1)
+const Euro5End = new Date(2010, 11, 31)
+
 /**
  * Calculate tax based on engine size
  *
@@ -26,7 +32,7 @@ function calculateEngineSizeCarTax(engineSize) {
  * @returns {number} The final tax amount
  */
 function reduceIfAlternative(tax, fuel) {
-  if (fuel !== 'Petrol' && fuel !== 'Diesel') {
+  if (fuel !== 'petrol' && fuel !== 'diesel') {
     return tax > 0 ? tax - 10 : 0
   }
 
@@ -56,7 +62,7 @@ function calculatePre2017CarTax(registrationDate, co2, fuel) {
  * @returns {number} The final tax amount
  */
 function calculateCurrentCarTax(co2, fuel, meetsRDE2) {
-  if (fuel != 'Diesel') {
+  if (fuel != 'diesel') {
     meetsRDE2 = true
   }
   const tax = getMappings(co2, meetsRDE2)
@@ -69,19 +75,50 @@ function calculateCurrentCarTax(co2, fuel, meetsRDE2) {
  * @returns {number} The final tax amount
  */
 function calculateTax(options) {
-  const { registrationDate, engineSize, co2, fuel, meetsRDE2, value } = options
+  let {
+    registrationDate,
+    engineSize,
+    co2,
+    fuel = '',
+    meetsRDE2,
+    value,
+    type = '',
+    euroStandard
+  } = options
+
   if (registrationDate < HistoricVehicle) {
     return 0
   }
 
+  fuel = fuel.toLowerCase()
+  type = type.toLowerCase()
+
   const isCurrent = registrationDate >= April2017
 
-  if (fuel === 'Electric') {
+  if (fuel === 'electric') {
     return value > 40000 && isCurrent ? 320 : 0
   }
 
   if (registrationDate < PreCO2) {
     return calculateEngineSizeCarTax(engineSize)
+  }
+
+  if (registrationDate >= PreCO2 && type === 'van') {
+    const euro4Van =
+      registrationDate >= Euro4Start &&
+      registrationDate < Euro4End &&
+      euroStandard === 4
+
+    const euro5Van =
+      registrationDate >= Euro5Start &&
+      registrationDate < Euro5End &&
+      euroStandard === 5
+
+    if (euro4Van || euro5Van) {
+      return 140
+    }
+
+    return 260
   }
 
   if (registrationDate >= PreCO2 && registrationDate < April2017) {

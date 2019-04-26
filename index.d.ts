@@ -5,6 +5,8 @@ interface VehicleInfo {
     value: number;
     fuel: string;
     meetsRDE2: boolean;
+    type: string;
+    euroStandard: number;
 }
 declare function calculateTax(options: VehicleInfo): number;
 export default calculateTax;
