@@ -211,7 +211,7 @@ describe('Tax Categories', () => {
   test('should return TC49 for diesel', () => {
     expect(calc({ registrationDate, fuel: 'Diesel' }).category).toBe('TC49')
   })
-  
+
   test('should return TC59 for alternative fuels', () => {
     expect(calc({ registrationDate, fuel: 'Hybrid' }).category).toBe('TC59')
   })
