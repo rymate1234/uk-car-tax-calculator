@@ -8,5 +8,12 @@ interface VehicleInfo {
     type: string;
     euroStandard: number;
 }
-declare function calculateTax(options: VehicleInfo): number;
+
+interface VehicleTax {
+    price: number;
+    band?: string;
+    category?: string;
+}
+
+declare function calculateTax(options: VehicleInfo): VehicleTax;
 export default calculateTax;

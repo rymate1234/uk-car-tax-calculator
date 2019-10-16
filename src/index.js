@@ -40,6 +40,26 @@ function reduceIfAlternative(tax, fuel) {
 }
 
 /**
+ * Derives the tax category from the fuel of the vehicle
+ *
+ * @param {string} fuel The fuel used
+ * @returns {string} The tax category
+ */
+function fuelToTaxCategory(fuel) {
+  if (fuel === 'petrol') {
+    return 'TC48'
+  }
+
+  if (fuel === 'diesel') {
+    return 'TC49'
+  }
+
+  if (fuel !== 'petrol' && fuel !== 'diesel') {
+    return 'TC59'
+  }
+}
+
+/**
  * Calculates car tax for vehicles registered between 1 March 2001 and 31 March 2017
  *
  * @param {Date} registrationDate When the vehicle was registered
@@ -50,7 +70,8 @@ function reduceIfAlternative(tax, fuel) {
  */
 function calculatePre2017CarTax(registrationDate, co2, fuel) {
   const tax = getPre2017Mappings(registrationDate, co2)
-  return reduceIfAlternative(tax, fuel)
+  tax.price = reduceIfAlternative(tax.price, fuel)
+  return tax
 }
 
 /**
@@ -66,7 +87,8 @@ function calculateCurrentCarTax(co2, fuel, meetsRDE2) {
     meetsRDE2 = true
   }
   const tax = getMappings(co2, meetsRDE2)
-  return reduceIfAlternative(tax, fuel)
+  tax.price = reduceIfAlternative(tax.price, fuel)
+  return tax
 }
 
 /**
@@ -86,21 +108,32 @@ function calculateTax(options) {
     euroStandard
   } = options
 
+  const taxResult = {
+    price: 0,
+    category: '',
+    band: ''
+  }
+
   if (registrationDate < HistoricVehicle) {
-    return 0
+    return taxResult
   }
 
   fuel = fuel.toLowerCase()
   type = type.toLowerCase()
 
+  taxResult.category = fuelToTaxCategory(fuel)
+
   const isCurrent = registrationDate >= April2017
 
   if (fuel === 'electric') {
-    return value > 40000 && isCurrent ? 320 : 0
+    taxResult.price = value > 40000 && isCurrent ? 320 : 0
+    return taxResult
   }
 
   if (registrationDate < PreCO2) {
-    return calculateEngineSizeCarTax(engineSize)
+    taxResult.price = calculateEngineSizeCarTax(engineSize)
+    taxResult.category = 'TC11'
+    return taxResult
   }
 
   if (registrationDate >= PreCO2 && type === 'van') {
@@ -115,18 +148,30 @@ function calculateTax(options) {
       euroStandard === 5
 
     if (euro4Van || euro5Van) {
-      return 140
+      taxResult.price = 140
+      taxResult.category = 'TC36'
+    } else {
+      taxResult.price = 260
+      taxResult.category = 'TC39'
     }
 
-    return 260
+    return taxResult
   }
 
   if (registrationDate >= PreCO2 && registrationDate < April2017) {
-    return calculatePre2017CarTax(registrationDate, co2, fuel)
+    return Object.assign(
+      {},
+      taxResult,
+      calculatePre2017CarTax(registrationDate, co2, fuel)
+    )
   }
 
   if (isCurrent) {
-    return calculateCurrentCarTax(co2, fuel, meetsRDE2)
+    return Object.assign(
+      {},
+      taxResult,
+      calculateCurrentCarTax(co2, fuel, meetsRDE2)
+    )
   }
 }
 

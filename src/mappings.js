@@ -6,27 +6,28 @@
 export function getPre2017Mappings(registrationDate, co2) {
   const pre2006 = new Date(2006, 2, 23)
   const values = [
-    { co2: 100, price: 0 },
-    { co2: 110, price: 20 },
-    { co2: 120, price: 30 },
-    { co2: 130, price: 125 },
-    { co2: 140, price: 145 },
-    { co2: 150, price: 160 },
-    { co2: 165, price: 200 },
-    { co2: 175, price: 235 },
-    { co2: 185, price: 260 },
-    { co2: 200, price: 300 }
+    { co2: 100, band: 'A', price: 0 },
+    { co2: 110, band: 'B', price: 20 },
+    { co2: 120, band: 'C', price: 30 },
+    { co2: 130, band: 'D', price: 125 },
+    { co2: 140, band: 'E', price: 145 },
+    { co2: 150, band: 'F', price: 160 },
+    { co2: 165, band: 'G', price: 200 },
+    { co2: 175, band: 'H', price: 235 },
+    { co2: 185, band: 'I', price: 260 },
+    { co2: 200, band: 'J', price: 300 }
   ]
 
   for (const value of values) {
-    const price = value.price
-    if (co2 <= value.co2) return price
+    const { price, band } = value
+    if (co2 <= value.co2) return { price, band }
   }
 
-  if (co2 <= 225 || (co2 > 226 && pre2006 > registrationDate)) return 325
+  if (co2 <= 225 || (co2 > 226 && pre2006 > registrationDate))
+    return { band: 'K', price: 325 }
 
-  if (co2 <= 255) return 555
-  if (co2 > 255) return 570
+  if (co2 <= 255) return { band: 'L', price: 555 }
+  if (co2 > 255) return { band: 'M', price: 570 }
 }
 
 /**
@@ -37,16 +38,18 @@ export function getPre2017Mappings(registrationDate, co2) {
 export function getMappings(co2, meetsRDE2) {
   const taxes = [0, 10, 25, 110, 130, 150, 170, 210, 530, 855, 1280, 1815, 2135]
   const thresholds = [0, 50, 75, 90, 100, 110, 130, 150, 170, 190, 225, 255]
-
+  let price = 0
   if (!meetsRDE2) {
     taxes.splice(1, 1)
     taxes.push(taxes[taxes.length - 1])
   }
 
   for (const threshold of thresholds) {
-    const price = taxes.shift()
-    if (co2 <= threshold) return price
+    price = taxes.shift()
+    if (co2 <= threshold) break
   }
 
-  if (co2 > 255) return taxes.shift()
+  if (co2 > 255) price = taxes.shift()
+
+  return { price }
 }
