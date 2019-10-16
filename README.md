@@ -21,13 +21,13 @@ const tax = calculateTax({
   fuel: 'Hybrid'
 })
 
-console.log(tax) // prints 315
+console.log(tax.price) // prints 315
 ```
 
 For a more comprehensive guide to usage check `test/index.test.js`
 
 ## Contributing
 
-PRs accepted, especially those concering updates to UK law.
+PRs accepted, especially those concerning updates to UK law.
 
 This project is linted with `eslint` using prettier, and runs tests with `jest` - these will need to pass before any PR is accepted.

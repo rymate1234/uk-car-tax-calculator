@@ -1,3 +1,17 @@
+# 2.0.0
+
+This major release adds support for returning the tax category and tax band (if applicable)
+
+This is a BREAKING CHANGE! The returned object is now in the following format:
+
+```ts
+interface VehicleTax {
+    price: number;
+    band?: string;
+    category?: string;
+}
+```
+
 # 1.1.0
 
 This version adds support for calculating the tax rate of vans / light goods vehicles
