@@ -10,13 +10,32 @@ const Euro4End = new Date(2006, 11, 31)
 const Euro5Start = new Date(2009, 0, 1)
 const Euro5End = new Date(2010, 11, 31)
 
+type Fuel = 'petrol' | 'diesel' | string
+
+interface VehicleInfo {
+  registrationDate?: Date
+  engineSize?: number
+  co2?: number
+  value?: number
+  fuel?: Fuel
+  meetsRDE2?: boolean
+  type?: string
+  euroStandard?: number
+}
+
+interface VehicleTax {
+  price: number
+  band?: string
+  category?: string
+}
+
 /**
  * Calculate tax based on engine size
  *
  * @param {number} engineSize Size of the engine
  * @returns {number} The tax amount
  */
-function calculateEngineSizeCarTax(engineSize) {
+function calculateEngineSizeCarTax(engineSize: number): number {
   if (engineSize <= 1549) {
     return 155
   } else {
@@ -31,7 +50,7 @@ function calculateEngineSizeCarTax(engineSize) {
  * @param {string} fuel The fuel used
  * @returns {number} The final tax amount
  */
-function reduceIfAlternative(tax, fuel) {
+function reduceIfAlternative(tax: number, fuel: Fuel): number {
   if (fuel !== 'petrol' && fuel !== 'diesel') {
     return tax > 0 ? tax - 10 : 0
   }
@@ -42,10 +61,10 @@ function reduceIfAlternative(tax, fuel) {
 /**
  * Derives the tax category from the fuel of the vehicle
  *
- * @param {string} fuel The fuel used
+ * @param {Fuel} fuel The fuel used
  * @returns {string} The tax category
  */
-function fuelToTaxCategory(fuel) {
+function fuelToTaxCategory(fuel: Fuel) {
   if (fuel === 'petrol') {
     return 'TC48'
   }
@@ -64,11 +83,15 @@ function fuelToTaxCategory(fuel) {
  *
  * @param {Date} registrationDate When the vehicle was registered
  * @param {number} co2 Amount of CO2 produced
- * @param {string} fuel The fuel used
+ * @param {Fuel} fuel The fuel used
  *
- * @returns {number} The final tax amount
+ * @returns {VehicleTax} The final tax amount
  */
-function calculatePre2017CarTax(registrationDate, co2, fuel) {
+function calculatePre2017CarTax(
+  registrationDate: Date,
+  co2: number,
+  fuel: Fuel
+): VehicleTax {
   const tax = getPre2017Mappings(registrationDate, co2)
   tax.price = reduceIfAlternative(tax.price, fuel)
   return tax
@@ -78,12 +101,16 @@ function calculatePre2017CarTax(registrationDate, co2, fuel) {
  * Calculates car tax for vehicles registered on or after 1 April 2017
  *
  * @param {number} co2 Amount of CO2 produced
- * @param {string} fuel The fuel used
+ * @param {Fuel} fuel The fuel used
  * @param {boolean} meetsRDE2 Whether the vehicle meets RDE2
- * @returns {number} The final tax amount
+ * @returns {VehicleTax} The final tax amount
  */
-function calculateCurrentCarTax(co2, fuel, meetsRDE2) {
-  if (fuel != 'diesel') {
+function calculateCurrentCarTax(
+  co2: number,
+  fuel: Fuel,
+  meetsRDE2: boolean
+): VehicleTax {
+  if (fuel !== 'diesel') {
     meetsRDE2 = true
   }
   const tax = getMappings(co2, meetsRDE2)
@@ -94,24 +121,18 @@ function calculateCurrentCarTax(co2, fuel, meetsRDE2) {
 /**
  * Calculate the current car tax of a vehicle
  * @param {VehicleInfo} options The list of vehicle options
- * @returns {number} The final tax amount
+ * @returns {VehicleTax} The final tax amount
  */
-function calculateTax(options) {
-  let {
-    registrationDate,
-    engineSize,
-    co2,
-    fuel = '',
-    meetsRDE2,
-    value,
-    type = '',
-    euroStandard
-  } = options
+function calculateTax(options: VehicleInfo): VehicleTax {
+  const { registrationDate, engineSize, co2, meetsRDE2, value, euroStandard } =
+    options
+
+  let { fuel = '', type = '' } = options
 
   const taxResult = {
     price: 0,
     category: '',
-    band: ''
+    band: '',
   }
 
   if (registrationDate < HistoricVehicle) {
