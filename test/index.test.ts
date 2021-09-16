@@ -1,4 +1,4 @@
-const calc = require('../dist')
+import calc from '../src'
 
 describe('Historic Vehicles', () => {
   const registrationDate = new Date(1978, 1, 1)
